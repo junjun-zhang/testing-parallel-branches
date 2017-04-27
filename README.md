@@ -1,4 +1,4 @@
 # Git repositroy for testing JTracker
 
-JTracker example workflows for development and testing.
+JTracker (https://github.com/icgc-dcc/jtracker) example workflows for development and testing.
 
