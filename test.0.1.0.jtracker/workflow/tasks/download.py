@@ -19,8 +19,16 @@ time.sleep(randint(1,10))
 task_stop = int(time.time())
 
 output_json = {
-    'task_start': task_start,
-    'task_stop': task_stop
+    'file': '/path/to/downloaded/file.bam',
+    'ega_file_id': 'EGAFxxxx',
+    'file_name': 'file.bam',
+    'object_id': 'xxxxx',
+    'file_size': 32322,
+    'file_md5sum': 'yyyyy',
+    'runtime': {
+        'task_start': task_start,
+        'task_stop': task_stop
+    }
 }
 
 save_output_json(output_json)

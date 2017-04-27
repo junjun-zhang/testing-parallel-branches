@@ -1,4 +1,4 @@
-# To be completed
+#Demo workflow
 
 workflow:
   name:  test
@@ -82,11 +82,8 @@ workflow:
           input:
             ega_file_id: ega_file.ega_file_id
             file_name: ega_file.file_name
-            object_id: ega_file.object_id
-            file_size: ega_file.file_size
-            file_md5sum: ega_file.file_md5sum
           depends_on: null
-        md5sum_check_download:
+        md5sum_check:
           task: md5sum_check
           input:
             file: file@download
@@ -111,7 +108,7 @@ workflow:
         xml_file_md5sum: xml_file_md5sum@prepare_metadata_xml
       depends_on:
       - completed@prepare_metadata_xml
-      - completed@md5sum_check_download
+      - completed@md5sum_check
 
 
 # A workflow is made up with one or more tasks
@@ -165,7 +162,7 @@ tasks:
       object_id:  # passing through
         type: string
       file_size:  # passing through
-        type: string
+        type: integer
       file_md5sum:  # passing through
         type: string
 
@@ -176,7 +173,7 @@ tasks:
         type: string
         is_file: true
       file_size:
-        type: string
+        type: integer
       file_md5sum:
         type: string
 

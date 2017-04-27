@@ -11,4 +11,4 @@ def get_task_dict(json_string):
 
 def save_output_json(output_dict={}):
     with open('output.json', 'w') as f:
-        f.write(json.dumps(output_dict))
+        f.write(json.dumps(output_dict, indent=2))

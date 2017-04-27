@@ -19,8 +19,14 @@ time.sleep(randint(1,10))
 task_stop = int(time.time())
 
 output_json = {
-    'task_start': task_start,
-    'task_stop': task_stop
+    'runtime': {
+        'task_start': task_start,
+        'task_stop': task_stop
+    }
 }
 
 save_output_json(output_json)
+
+# error out with certain rate for testing
+if randint(1,10) > 6:
+    sys.exit(1)

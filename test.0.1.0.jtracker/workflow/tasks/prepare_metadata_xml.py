@@ -19,8 +19,14 @@ time.sleep(randint(1,10))
 task_stop = int(time.time())
 
 output_json = {
-    'task_start': task_start,
-    'task_stop': task_stop
+    'xml_file': '/path/to/xml_file.xml',
+    'xml_file_name': 'xml_file.xml',
+    'xml_file_size': 23233,
+    'xml_file_md5sum': 'xxxxxxxx',
+    'runtime': {
+        'task_start': task_start,
+        'task_stop': task_stop
+    }
 }
 
 save_output_json(output_json)
