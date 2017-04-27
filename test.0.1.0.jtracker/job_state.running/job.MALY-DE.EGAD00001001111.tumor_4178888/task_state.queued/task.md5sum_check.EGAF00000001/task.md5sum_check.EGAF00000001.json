@@ -1,0 +1,16 @@
+{
+  "task": "md5sum_check", 
+  "depends_on": [
+    "completed@download.EGAF00000001@same_host"
+  ], 
+  "command": "md5sum_check.py", 
+  "call": "md5sum_check", 
+  "input": {
+    "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2", 
+    "file": "{{file@download.EGAF00000001}}", 
+    "file_size": 101479101227
+  }, 
+  "runtime": {
+    "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+  }
+}
