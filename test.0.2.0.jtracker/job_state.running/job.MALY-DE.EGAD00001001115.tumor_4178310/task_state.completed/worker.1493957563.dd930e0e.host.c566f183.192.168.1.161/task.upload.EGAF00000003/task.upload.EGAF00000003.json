@@ -6,6 +6,16 @@
   ], 
   "tool": "upload", 
   "command": "upload.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1493957915, 
+        "task_stop": 1493957925
+      }, 
+      "worker_id": "worker.1493957563.dd930e0e.host.c566f183.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
   "input": {
     "data_file": "{{file@decryption.EGAF00000003}}", 
     "bundle_id": "EGAZxxxxxxx", 
