@@ -1,0 +1,26 @@
+{
+  "task": "md5sum_check_data", 
+  "depends_on": [
+    "completed@download.EGAF00000004@same_host"
+  ], 
+  "tool": "md5sum_check", 
+  "command": "md5sum_check.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1493956800, 
+        "task_stop": 1493956801
+      }, 
+      "worker_id": "worker.1493956702.dd1e0a77.host.c566f183.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
+  "input": {
+    "file_md5sum": "116c489613590f1aaaaf9437910f4e50", 
+    "file": "{{file@download.EGAF00000004}}", 
+    "file_size": 15934296
+  }, 
+  "runtime": {
+    "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+  }
+}
