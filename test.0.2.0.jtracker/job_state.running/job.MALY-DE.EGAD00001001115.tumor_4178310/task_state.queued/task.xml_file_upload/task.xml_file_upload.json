@@ -1,0 +1,19 @@
+{
+  "task": "xml_file_upload", 
+  "depends_on": [
+    "completed@prepare_metadata_xml"
+  ], 
+  "tool": "upload", 
+  "command": "upload.py", 
+  "input": {
+    "xml_file_md5sum": "{{xml_file_md5sum@prepare_metadata_xml}}", 
+    "xml_file_name": "{{xml_file_name@prepare_metadata_xml}}", 
+    "xml_file": "{{xml_file@prepare_metadata_xml}}", 
+    "ega_files.file": "{{file@download}}", 
+    "xml_file_size": "{{xml_file_size@prepare_metadata_xml}}", 
+    "bundle_id": "EGAZxxxxxxx"
+  }, 
+  "runtime": {
+    "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+  }
+}
