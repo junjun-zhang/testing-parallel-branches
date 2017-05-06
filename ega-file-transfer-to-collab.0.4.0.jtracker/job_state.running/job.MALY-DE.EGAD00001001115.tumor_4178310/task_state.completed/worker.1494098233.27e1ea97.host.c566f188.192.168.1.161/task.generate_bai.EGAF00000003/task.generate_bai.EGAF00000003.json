@@ -1,0 +1,26 @@
+{
+  "task": "generate_bai", 
+  "depends_on": [
+    "completed@decryption.EGAF00000003"
+  ], 
+  "tool": "generate_bai", 
+  "command": "generate_bai.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494098304, 
+        "task_stop": 1494098306
+      }, 
+      "worker_id": "worker.1494098233.27e1ea97.host.c566f188.192.168.1.161", 
+      "bai_file": "/Users/junjun/jtracker/worker.1494098233.27e1ea97.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.generate_bai.EGAF00000003/bai_file.xml", 
+      "task_state": "completed"
+    }
+  ], 
+  "input": {
+    "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam", 
+    "ega_file_id": "EGAF00000003"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
