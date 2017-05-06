@@ -1,0 +1,1 @@
+{"task": "upload", "depends_on": ["completed@decryption.EGAF00000003", "completed@generate_bai.EGAF00000003"], "tool": "upload", "command": "upload.py", "input": {"data_file": null, "bundle_id": "EGAZxxxxxxx", "bai_file": null}, "runtime": {"docker": null}}
