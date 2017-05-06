@@ -1,0 +1,20 @@
+{
+  "task": "xml_file_upload", 
+  "depends_on": [
+    "completed@prepare_metadata_xml", 
+    "completed@generate_bai"
+  ], 
+  "tool": "upload", 
+  "command": "upload.py", 
+  "input": {
+    "xml_file_md5sum": "{{xml_file_md5sum@prepare_metadata_xml}}", 
+    "xml_file_name": "{{xml_file_name@prepare_metadata_xml}}", 
+    "xml_file": "{{xml_file@prepare_metadata_xml}}", 
+    "bai_file": "{{bai_file@generate_bai}}", 
+    "xml_file_size": "{{xml_file_size@prepare_metadata_xml}}", 
+    "bundle_id": "EGAZxxxxxxx"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
