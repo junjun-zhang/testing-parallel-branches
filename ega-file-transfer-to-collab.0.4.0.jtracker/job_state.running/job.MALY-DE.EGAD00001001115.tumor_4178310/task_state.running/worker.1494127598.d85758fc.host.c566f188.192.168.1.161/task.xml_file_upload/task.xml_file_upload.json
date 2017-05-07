@@ -8,9 +8,9 @@
   "input": {
     "file_name": "bundle.EGAZ000000000.xml", 
     "object_id": "9e8c5377-4e0b-4405-9793-fe3318e8b098", 
-    "file_md5sum": "{{xml_file_md5sum@prepare_metadata_xml}}", 
-    "file": "{{xml_file@prepare_metadata_xml}}", 
-    "file_size": "{{xml_file_size@prepare_metadata_xml}}", 
+    "file_md5sum": "xxxxxxxx", 
+    "file": "/Users/junjun/jtracker/worker.1494127598.d85758fc.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.prepare_metadata_xml/bundle.EGAZ000000000.xml", 
+    "file_size": 23233, 
     "bundle_id": "EGAZ000000000"
   }, 
   "runtime": {
