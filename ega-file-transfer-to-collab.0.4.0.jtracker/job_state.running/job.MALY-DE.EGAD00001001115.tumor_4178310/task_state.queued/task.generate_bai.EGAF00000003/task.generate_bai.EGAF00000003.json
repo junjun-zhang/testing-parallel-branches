@@ -1,0 +1,20 @@
+{
+  "task": "generate_bai", 
+  "depends_on": [
+    "completed@decryption.EGAF00000003", 
+    "completed@md5sum_check_decrypt.EGAF00000003"
+  ], 
+  "tool": "generate_bai", 
+  "command": "generate_bai.py", 
+  "input": {
+    "file_name": "{{file_name@decryption.EGAF00000003}}", 
+    "ega_file_id": "{{ega_file_id@decryption.EGAF00000003}}", 
+    "file_md5sum": "{{file_md5sum@decryption.EGAF00000003}}", 
+    "file_size": "{{file_size@decryption.EGAF00000003}}", 
+    "bundle_id": "EGAZxxxxxxx", 
+    "bam_file": "{{file@decryption.EGAF00000003}}"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
