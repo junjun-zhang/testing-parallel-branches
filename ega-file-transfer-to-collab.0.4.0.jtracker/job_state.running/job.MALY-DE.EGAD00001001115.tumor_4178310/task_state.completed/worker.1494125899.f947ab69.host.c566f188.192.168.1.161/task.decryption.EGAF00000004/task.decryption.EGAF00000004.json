@@ -6,6 +6,16 @@
   ], 
   "tool": "decryption", 
   "command": "decryption.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494126009, 
+        "task_stop": 1494126012
+      }, 
+      "worker_id": "worker.1494125899.f947ab69.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
   "input": {
     "input_file": "/path/to/downloaded/file.bam", 
     "file_name": "file.bam", 
