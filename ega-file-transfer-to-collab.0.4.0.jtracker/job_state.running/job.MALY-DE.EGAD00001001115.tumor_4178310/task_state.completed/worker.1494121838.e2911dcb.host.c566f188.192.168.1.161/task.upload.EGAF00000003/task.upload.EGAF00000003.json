@@ -1,0 +1,35 @@
+{
+  "task": "upload", 
+  "depends_on": [
+    "completed@decryption.EGAF00000003", 
+    "completed@generate_bai.EGAF00000003"
+  ], 
+  "tool": "upload", 
+  "command": "upload.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494122440, 
+        "task_stop": 1494122447
+      }, 
+      "worker_id": "worker.1494121838.e2911dcb.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
+  "input": {
+    "idx_file_size": null, 
+    "idx_file_md5sum": null, 
+    "file_name": null, 
+    "idx_file": null, 
+    "object_id": null, 
+    "file_md5sum": null, 
+    "file": null, 
+    "file_size": null, 
+    "bundle_id": "EGAZxxxxxxx", 
+    "idx_object_id": null, 
+    "idx_file_name": null
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
