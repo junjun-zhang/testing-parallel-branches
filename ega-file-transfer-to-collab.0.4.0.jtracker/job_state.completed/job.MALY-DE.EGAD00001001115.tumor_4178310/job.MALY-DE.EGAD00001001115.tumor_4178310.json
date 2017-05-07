@@ -11,7 +11,7 @@
    "library_strategy": "WGS",
    "metadata_repo_url": "https://github.com/icgc-dcc/ega-file-transfer",
    "metadata_path": "ega_xml",
-   "files": [
+   "ega_files": [
        {
            "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
            "encrypted_file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
