@@ -6,6 +6,16 @@
   ], 
   "tool": "upload", 
   "command": "upload.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494126114, 
+        "task_stop": 1494126122
+      }, 
+      "worker_id": "worker.1494125899.f947ab69.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
   "input": {
     "idx_file_size": null, 
     "idx_file_md5sum": null, 
