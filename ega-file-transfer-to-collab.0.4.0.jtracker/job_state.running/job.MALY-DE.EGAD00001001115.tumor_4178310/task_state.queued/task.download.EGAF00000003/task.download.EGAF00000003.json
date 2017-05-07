@@ -1,0 +1,16 @@
+{
+  "task": "download", 
+  "depends_on": null, 
+  "tool": "download", 
+  "command": "download.py", 
+  "input": {
+    "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam", 
+    "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2", 
+    "ega_file_id": "EGAF00000003", 
+    "object_id": "15069904-9a19-5ec1-ac37-ab89694280e7", 
+    "file_size": 101479101227
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
