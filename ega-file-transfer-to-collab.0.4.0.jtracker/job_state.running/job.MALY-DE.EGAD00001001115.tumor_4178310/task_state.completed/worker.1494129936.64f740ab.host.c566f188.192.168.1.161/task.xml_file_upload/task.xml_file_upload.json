@@ -5,6 +5,16 @@
   ], 
   "tool": "upload", 
   "command": "upload.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494130154, 
+        "task_stop": 1494130158
+      }, 
+      "worker_id": "worker.1494129936.64f740ab.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
   "input": {
     "file_name": "bundle.EGAZ000000000.xml", 
     "object_id": "9e8c5377-4e0b-4405-9793-fe3318e8b098", 
