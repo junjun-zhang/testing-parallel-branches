@@ -1,0 +1,1 @@
+{"task": "md5sum_check_data", "depends_on": ["completed@download.EGAF00000003@same_host"], "tool": "md5sum_check", "command": "md5sum_check.py", "input": {"file_name": "file.bam", "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2", "file": "/path/to/downloaded/file.bam"}, "runtime": {"docker": null}}
