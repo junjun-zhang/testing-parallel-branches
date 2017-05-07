@@ -5,6 +5,16 @@
   ], 
   "tool": "md5sum_check", 
   "command": "md5sum_check.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494126045, 
+        "task_stop": 1494126053
+      }, 
+      "worker_id": "worker.1494125899.f947ab69.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
+    }
+  ], 
   "input": {
     "file_md5sum": null, 
     "file": null
