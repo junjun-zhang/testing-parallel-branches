@@ -1,0 +1,15 @@
+{
+  "task": "md5sum_check_decrypt", 
+  "depends_on": [
+    "completed@decryption.EGAF00000003"
+  ], 
+  "tool": "md5sum_check", 
+  "command": "md5sum_check.py", 
+  "input": {
+    "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2", 
+    "file": "/Users/junjun/jtracker/worker.1494195886.f74a608d.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.decryption.EGAF00000003/c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
