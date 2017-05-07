@@ -13,10 +13,10 @@
    "ega_metadata_git_repo": "https://github.com/icgc-dcc/ega-file-transfer",
    "ega_metadata_path": "ega_xml",
    "ega_metadata_file_name": "bundle.EGAZ000000000.xml",
+   "ega_metadata_object_id": "9e8c5377-4e0b-4405-9793-fe3318e8b098",
    "ega_files": [
        {
            "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
-           "encrypted_file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
            "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam",
            "file_size": 101479101227,
            "ega_file_id": "EGAF00000003",
@@ -24,7 +24,7 @@
        },
        {
            "file_md5sum": "116c489613590f1aaaaf9437910f4e50",
-           "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam.bai",
+           "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam",
            "file_size": 15934296,
            "ega_file_id": "EGAF00000004",
            "object_id": "17a5c042-773b-554a-8a9e-70251f3d4940"
