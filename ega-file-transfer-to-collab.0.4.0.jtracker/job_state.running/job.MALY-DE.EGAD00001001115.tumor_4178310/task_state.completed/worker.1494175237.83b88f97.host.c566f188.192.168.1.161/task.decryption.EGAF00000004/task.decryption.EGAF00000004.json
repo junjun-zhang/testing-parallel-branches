@@ -6,6 +6,22 @@
   ], 
   "tool": "decryption", 
   "command": "decryption.py", 
+  "output": [
+    {
+      "task_state": "completed", 
+      "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam", 
+      "ega_file_id": "EGAF00000004", 
+      "object_id": "17a5c042-773b-554a-8a9e-70251f3d4940", 
+      "file_md5sum": "116c489613590f1aaaaf9437910f4e50", 
+      "worker_id": "worker.1494175237.83b88f97.host.c566f188.192.168.1.161", 
+      "file": "/Users/junjun/jtracker/worker.1494175237.83b88f97.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.decryption.EGAF00000004/c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam", 
+      "file_size": 15934296, 
+      "runtime": {
+        "task_start": 1494175339, 
+        "task_stop": 1494175346
+      }
+    }
+  ], 
   "input": {
     "input_file": "/Users/junjun/jtracker/worker.1494175240.70eb18d5.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.download.EGAF00000004/c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam", 
     "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam", 
