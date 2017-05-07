@@ -8,12 +8,24 @@
       "xml_file_md5sum": "xxxxxxxx", 
       "xml_file_name": "bundle.EGAZ000000000.xml", 
       "xml_file": "/Users/junjun/jtracker/worker.1494129936.64f740ab.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.prepare_metadata_xml/bundle.EGAZ000000000.xml", 
-      "xml_file_size": 23233, 
-      "worker_id": "worker.1494129936.64f740ab.host.c566f188.192.168.1.161", 
-      "task_state": "completed", 
       "runtime": {
         "task_start": 1494130107, 
         "task_stop": 1494130112
+      }, 
+      "xml_file_size": 23233, 
+      "worker_id": "worker.1494129936.64f740ab.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
+    }, 
+    {
+      "xml_file_md5sum": "xxxxxxxx", 
+      "xml_file_name": "bundle.EGAZ000000000.xml", 
+      "xml_file": "/Users/junjun/jtracker/worker.1494130828.7bf49af5.host.c566f188.192.168.1.161/job.MALY-DE.EGAD00001001115.tumor_4178310/task.prepare_metadata_xml/bundle.EGAZ000000000.xml", 
+      "xml_file_size": 23233, 
+      "worker_id": "worker.1494130828.7bf49af5.host.c566f188.192.168.1.161", 
+      "task_state": "completed", 
+      "runtime": {
+        "task_start": 1494130913, 
+        "task_stop": 1494130922
       }
     }
   ], 
