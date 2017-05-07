@@ -1,0 +1,32 @@
+{
+  "task": "download", 
+  "depends_on": null, 
+  "tool": "download", 
+  "command": "download.py", 
+  "output": [
+    {
+      "task_state": "completed", 
+      "file_name": "file.bam", 
+      "ega_file_id": "EGAFxxxx", 
+      "object_id": "xxxxx", 
+      "file_md5sum": "yyyyy", 
+      "worker_id": "worker.1494125899.f947ab69.host.c566f188.192.168.1.161", 
+      "file": "/path/to/downloaded/file.bam", 
+      "file_size": 32322, 
+      "runtime": {
+        "task_start": 1494125933, 
+        "task_stop": 1494125941
+      }
+    }
+  ], 
+  "input": {
+    "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam.bai", 
+    "file_md5sum": "116c489613590f1aaaaf9437910f4e50", 
+    "ega_file_id": "EGAF00000004", 
+    "object_id": "17a5c042-773b-554a-8a9e-70251f3d4940", 
+    "file_size": 15934296
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
