@@ -13,6 +13,14 @@
       }, 
       "worker_id": "worker.1494129936.64f740ab.host.c566f188.192.168.1.161", 
       "task_state": "completed"
+    }, 
+    {
+      "runtime": {
+        "task_start": 1494130877, 
+        "task_stop": 1494130884
+      }, 
+      "worker_id": "worker.1494130496.aea62f04.host.c566f188.192.168.1.161", 
+      "task_state": "completed"
     }
   ], 
   "input": {
