@@ -3,6 +3,20 @@
   "depends_on": null, 
   "tool": "prepare_metadata_xml", 
   "command": "prepare_metadata_xml.py", 
+  "output": [
+    {
+      "xml_file_md5sum": "xxxxxxxx", 
+      "xml_file_name": "bundle.EGAZ000000000.xml", 
+      "xml_file": "/u/junjun/jtracker/worker.1494269629.95516686.host.8ea9b69a.10.0.0.11/job.MALY-DE.EGAD00001001115.tumor_4178310/task.prepare_metadata_xml/bundle.EGAZ000000000.xml", 
+      "xml_file_size": 23233, 
+      "worker_id": "worker.1494269629.95516686.host.8ea9b69a.10.0.0.11", 
+      "task_state": "completed", 
+      "runtime": {
+        "task_start": 1494270052, 
+        "task_stop": 1494270062
+      }
+    }
+  ], 
   "input": {
     "ega_metadata_file_name": "bundle.EGAZ000000000.xml", 
     "ega_study_id": "EGAS0000000000", 
