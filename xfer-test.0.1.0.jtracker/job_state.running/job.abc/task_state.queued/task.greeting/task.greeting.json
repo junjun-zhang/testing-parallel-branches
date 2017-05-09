@@ -1,0 +1,12 @@
+{
+  "task": "greeting", 
+  "depends_on": null, 
+  "tool": "greeting", 
+  "command": "greeting.py", 
+  "input": {
+    "who": "World"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
