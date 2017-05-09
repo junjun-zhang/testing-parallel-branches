@@ -1,0 +1,23 @@
+{
+  "task": "greeting", 
+  "depends_on": null, 
+  "tool": "greeting", 
+  "command": "greeting.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494300092, 
+        "task_stop": 1494300092
+      }, 
+      "worker_id": "worker.1494300066.b2e54620.host.8ea9b69a.10.0.0.11", 
+      "task_state": "completed", 
+      "greeting_file": "/u/junjun/jtracker/worker.1494300066.b2e54620.host.8ea9b69a.10.0.0.11/job.junjun/task.greeting/hello_Junjun.txt"
+    }
+  ], 
+  "input": {
+    "who": "Junjun"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
