@@ -1,0 +1,1 @@
+{"task": "get_md5sum", "depends_on": ["completed@greeting"], "tool": "get_md5sum", "command": "md5sum.py", "input": {"file": "/u/junjun/jtracker/worker.1494300066.b2e54620.host.8ea9b69a.10.0.0.11/job.abc/task.greeting/hello_World.txt"}, "runtime": {"docker": null}}
