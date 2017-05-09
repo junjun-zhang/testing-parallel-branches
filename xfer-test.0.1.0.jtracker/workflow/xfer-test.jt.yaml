@@ -1,0 +1,56 @@
+#Demo workflow
+
+workflow:
+  name:  test
+  version: "0.2.0"
+  source_code: "not_implemented_yet"
+
+  runtime:
+    docker: null
+
+  execution:
+    constraint: same_host  # other values: 'shared_fs', 'same_worker'
+    memory: 2g
+    cpu: 1
+
+  input:
+    who_are_you:
+      type: string
+
+  tasks:
+    greeting:
+      tool: greeting
+      input:
+        who: who_are_you
+      depends_on: null
+    get_md5sum:
+      tool: get_md5sum
+      input:
+        file: greeting_file@greeting
+      depends_on:
+      - completed@greeting
+
+# A workflow is made up with one or more tools
+# Each tool can have its own docker imagine if desirablebbvv
+tools:
+  greeting:
+    command: greeting.py
+    input:
+      who:
+        type: string
+    output:
+      greeting_file:
+        type: string
+        is_file: true
+
+  get_md5sum:
+    command: md5sum.py
+    input:
+      file:
+        type: string
+        is_file: true
+    output:
+      file_size:
+        type: integer
+      file_md5sum:
+        type: string
