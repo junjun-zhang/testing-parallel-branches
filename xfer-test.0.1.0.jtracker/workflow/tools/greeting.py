@@ -16,7 +16,7 @@ task_start = int(time.time())
 # do the real work here
 
 cmd = 'hello_world'
-arg = task_dict.get('input').get('who_are_you')
+arg = task_dict.get('input').get('who')
 
 try:
     r = subprocess.check_output("%s %s" % (cmd, arg), shell=True)

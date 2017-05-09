@@ -20,6 +20,7 @@ input_file = task_dict.get('input').get('file')
 try:
     r = subprocess.check_output("%s %s |awk '{print $1}' > %s.md5sum" % (cmd, input_file, input_file), shell=True)
 except Exception, e:
+    print e
     sys.exit(1)  # task failed
 
 with open("%s.md5sum" % input_file, "r") as f:
