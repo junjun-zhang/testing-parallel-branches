@@ -6,6 +6,20 @@
   ], 
   "tool": "upload", 
   "command": "upload.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498758351.73e205b9.host.c566f188.10.0.26.18", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "runtime": {
+        "task_start": 1498758947, 
+        "task_stop": 1498758948
+      }
+    }
+  ], 
   "input": {
     "data_file": null, 
     "bundle_id": "EGAZxxxxxxx", 
