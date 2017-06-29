@@ -7,9 +7,9 @@
   "tool": "upload", 
   "command": "upload.py", 
   "input": {
-    "data_file": "{{file@decryption.EGAF00000003}}", 
+    "data_file": null, 
     "bundle_id": "EGAZxxxxxxx", 
-    "bai_file": "{{file@generate_bai.EGAF00000003}}"
+    "bai_file": null
   }, 
   "runtime": {
     "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
