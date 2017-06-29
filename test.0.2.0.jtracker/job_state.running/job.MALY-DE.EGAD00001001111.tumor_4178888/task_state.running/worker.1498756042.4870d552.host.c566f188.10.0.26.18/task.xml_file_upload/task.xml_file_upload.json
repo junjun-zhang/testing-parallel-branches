@@ -7,11 +7,13 @@
   "tool": "upload", 
   "command": "upload.py", 
   "input": {
-    "xml_file_md5sum": "{{xml_file_md5sum@prepare_metadata_xml}}", 
-    "xml_file_name": "{{xml_file_name@prepare_metadata_xml}}", 
-    "xml_file": "{{xml_file@prepare_metadata_xml}}", 
-    "ega_files.file": "{{file@download}}", 
-    "xml_file_size": "{{xml_file_size@prepare_metadata_xml}}", 
+    "xml_file_md5sum": "xxxxxxxx", 
+    "xml_file_name": "xml_file.xml", 
+    "xml_file": "/path/to/xml_file.xml", 
+    "ega_files.file": [
+      "/path/to/downloaded/file.bam"
+    ], 
+    "xml_file_size": 23233, 
     "bundle_id": "EGAZxxxxxxx"
   }, 
   "runtime": {
