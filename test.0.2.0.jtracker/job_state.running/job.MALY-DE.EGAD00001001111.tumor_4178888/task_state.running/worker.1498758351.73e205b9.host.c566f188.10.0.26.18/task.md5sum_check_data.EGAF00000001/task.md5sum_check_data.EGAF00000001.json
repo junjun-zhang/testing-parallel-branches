@@ -7,7 +7,7 @@
   "command": "md5sum_check.py", 
   "input": {
     "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2", 
-    "file": "{{file@download.EGAF00000001}}", 
+    "file": "/path/to/downloaded/file.bam", 
     "file_size": 101479101227
   }, 
   "runtime": {
