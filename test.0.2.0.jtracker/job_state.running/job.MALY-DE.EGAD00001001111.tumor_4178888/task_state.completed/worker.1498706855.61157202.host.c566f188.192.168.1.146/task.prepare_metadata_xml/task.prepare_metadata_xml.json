@@ -1,0 +1,34 @@
+{
+  "task": "prepare_metadata_xml", 
+  "depends_on": null, 
+  "tool": "prepare_metadata_xml", 
+  "command": "prepare_metadata_xml.py", 
+  "output": [
+    {
+      "xml_file_md5sum": "xxxxxxxx", 
+      "xml_file_name": "xml_file.xml", 
+      "xml_file": "/path/to/xml_file.xml", 
+      "_jt_": {
+        "worker_id": "worker.1498706855.61157202.host.c566f188.192.168.1.146", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "xml_file_size": 23233, 
+      "runtime": {
+        "task_start": 1498706930, 
+        "task_stop": 1498706937
+      }
+    }
+  ], 
+  "input": {
+    "metadata_git_repo": null, 
+    "submitter_sample_id": "tumor_4178310", 
+    "dataset_id": null, 
+    "project_code": "MALY-DE", 
+    "metadata_path": "ega_xml"
+  }, 
+  "runtime": {
+    "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+  }
+}
