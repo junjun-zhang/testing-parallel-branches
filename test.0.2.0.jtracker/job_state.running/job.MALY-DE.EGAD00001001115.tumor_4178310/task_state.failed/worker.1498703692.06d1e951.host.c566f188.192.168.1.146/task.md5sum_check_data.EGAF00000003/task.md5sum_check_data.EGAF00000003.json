@@ -5,6 +5,20 @@
   ], 
   "tool": "md5sum_check", 
   "command": "md5sum_check.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498703692.06d1e951.host.c566f188.192.168.1.146", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc7", 
+        "task_state": "failed"
+      }, 
+      "runtime": {
+        "task_start": 1498703736, 
+        "task_stop": 1498703739
+      }
+    }
+  ], 
   "input": {
     "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2", 
     "file": "/path/to/downloaded/file.bam", 
