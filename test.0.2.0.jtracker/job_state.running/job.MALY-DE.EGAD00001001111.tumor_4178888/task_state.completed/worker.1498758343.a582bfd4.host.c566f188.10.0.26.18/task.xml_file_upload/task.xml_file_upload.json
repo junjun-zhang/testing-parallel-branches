@@ -6,6 +6,20 @@
   ], 
   "tool": "upload", 
   "command": "upload.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498758343.a582bfd4.host.c566f188.10.0.26.18", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "runtime": {
+        "task_start": 1498758451, 
+        "task_stop": 1498758460
+      }
+    }
+  ], 
   "input": {
     "xml_file_md5sum": "xxxxxxxx", 
     "xml_file_name": "xml_file.xml", 
