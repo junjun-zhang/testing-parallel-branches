@@ -1,0 +1,31 @@
+{
+  "task": "upload", 
+  "depends_on": [
+    "completed@decryption.EGAF00000001", 
+    "completed@generate_bai.EGAF00000001"
+  ], 
+  "tool": "upload", 
+  "command": "upload.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498757053.61fa45f0.host.c566f188.10.0.26.18", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "runtime": {
+        "task_start": 1498757114, 
+        "task_stop": 1498757121
+      }
+    }
+  ], 
+  "input": {
+    "data_file": null, 
+    "bundle_id": "EGAZxxxxxxx", 
+    "bai_file": null
+  }, 
+  "runtime": {
+    "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+  }
+}
