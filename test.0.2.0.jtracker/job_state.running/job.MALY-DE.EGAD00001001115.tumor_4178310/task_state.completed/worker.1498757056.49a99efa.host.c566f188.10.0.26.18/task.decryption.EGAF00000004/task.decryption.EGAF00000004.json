@@ -5,6 +5,20 @@
   ], 
   "tool": "decryption", 
   "command": "decryption.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498757056.49a99efa.host.c566f188.10.0.26.18", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "runtime": {
+        "task_start": 1498757158, 
+        "task_stop": 1498757161
+      }
+    }
+  ], 
   "input": {
     "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam.bai", 
     "ega_file_id": "EGAF00000004"
