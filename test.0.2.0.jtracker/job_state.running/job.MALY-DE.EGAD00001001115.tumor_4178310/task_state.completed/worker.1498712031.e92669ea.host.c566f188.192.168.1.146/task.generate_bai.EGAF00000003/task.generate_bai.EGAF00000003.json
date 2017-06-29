@@ -5,6 +5,20 @@
   ], 
   "tool": "generate_bai", 
   "command": "generate_bai.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498712031.e92669ea.host.c566f188.192.168.1.146", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "runtime": {
+        "task_start": 1498712315, 
+        "task_stop": 1498712324
+      }
+    }
+  ], 
   "input": {
     "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam", 
     "ega_file_id": "EGAF00000003"
