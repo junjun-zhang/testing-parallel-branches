@@ -1,0 +1,20 @@
+{
+  "project_code": "CGC_pro",
+  "bundle_id": "EGAZ000000000001",
+  "ega_files": [
+    {
+      "ega_file_id": "EGAF012345678901",
+      "file_name": "136414c0.bam.cip",
+      "file_size": null,
+      "file_md5sum": "68b329da9893e34099c7d8ad5cb9c940",
+      "object_id": "c4c8dcfb-ec38-4a0e-9992-b495bae67e29"
+    },
+    {
+      "ega_file_id": "EGAF012345678902",
+      "file_name": "136414c0.bam.bai.cip",
+      "file_size": null,
+      "file_md5sum": "ff2cd90dde59bdd857a75e79a69ad106",
+      "object_id": "8653f05d-5669-4a9d-97a6-a327ad7cdafa"
+    }
+  ]
+}

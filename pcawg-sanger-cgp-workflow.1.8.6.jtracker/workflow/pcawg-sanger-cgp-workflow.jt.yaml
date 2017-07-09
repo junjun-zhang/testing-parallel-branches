@@ -1,0 +1,1024 @@
+
+tasks:
+  get_basename:
+    input:
+      f:
+        type: File
+
+    command: "basename ${f} | cut -f 1 -d '.'"
+
+    output:
+      base:
+        type: String
+        value: "read_string(stdout())"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  getSampleId:
+    input:
+      inBam:
+        type: File
+
+    command: |
+      samtools view -H ${inBam} | grep -m 1 "SM:" | sed 's/.*SM:\(.*\).*/\1/g'
+
+    output:
+      SM:
+        type: String
+        value: "read_string(stdout())"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  compareGenotype:
+    input:
+      controlBam:
+        type: File
+      controlBamBai:
+        type: File
+      controlBamId:
+        type: String
+      tumorBam:
+        type: File
+      tumorBamBai:
+        type: File
+      tumorBamId:
+        type: String
+      outputDir:
+        type: String
+        value: genotype
+
+    command: |
+      mkdir -p ${outputDir};
+      compareBamGenotypes.pl \
+      -o ${outputDir} \
+      -nb ${controlBam} \
+      -j ${outputDir + "/summary.json"} \
+      -tb ${tumorBam}
+
+    output:
+      genotypeSummary:
+        type: File
+        value: "${outputDir}/summary.json"
+      controlGender:
+        type: File
+        value: "${outputDir}/${controlBamId}.full_gender.tsv"
+      controlGenotype:
+        type: File
+        value: "${outputDir}/${controlBamId}.full_genotype.tsv"
+      tumorGender:
+        type: File
+        value: "${outputDir}/${tumorBamId}.full_gender.tsv"
+      tumorGenotype:
+        type: File
+        value: "${outputDir}/${tumorBamId}.full_genotype.tsv"
+      tumorVsControlGenotype:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.genotype.txt"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  analyzeContamination:
+    input:
+      bamFile:
+        type: File
+      bamIndexFile:
+        type: File
+      SM:
+        type: String
+
+      ascatSegmentFile:
+        type: File
+
+      contamDownsampOneIn:
+        type: Int
+        value: 25
+      process:
+        type: String
+      outputDir:
+        type: String
+        value: "contamination"
+
+    command: |
+      mkdir -p ${outputDir};
+      if [ ${process} == "tumor" ]; then
+        verifyBamHomChk.pl \
+        -o ${outputDir} \
+        -b ${bamFile} \
+        -d ${contamDownsampOneIn} \
+        -j ${outputDir + "/" + SM + "_summary.json"} \
+        -a ${ascatSegmentFile}
+      else
+        verifyBamHomChk.pl \
+        -o ${outputDir} \
+        -b ${bamFile} \
+        -d ${contamDownsampOneIn} \
+        -j ${outputDir + "/" + SM + "_summary.json"}
+      fi
+
+    output:
+      summary:
+        type: File
+        value: "${outputDir}/${SM}_summary.json"
+      depthRG:
+        value: "${outputDir}/${SM}.depthRG"
+      selfRG:
+        value: "${outputDir}/${SM}.selfRG"
+      depthSM:
+        value: "${outputDir}/${SM}.depthSM"
+      selfSM:
+        value: "${outputDir}/${SM}.selfSM"
+      snps:
+        value: "${outputDir}/${SM}_snps.vcf"
+      log:
+        value: "${outputDir}/${SM}.log"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  bam_stats:
+    input:
+      File bamFile
+      File bamIndexFile
+      String bamFileName
+
+    command: |
+      bam_stats -i ${bamFile} \
+              -o ${bamFileName + ".bam.bas"}
+
+    output:
+      basFile:
+        type: File
+        value: "${bamFileName}.bam.bas"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  bbAlleleCount:
+    input:
+      bamFile:
+        type: File
+      bamIndexFile:
+        type: File
+      bbRefLoci:
+        type: File
+      bbRefName:
+        type: String
+      SM:
+        type: String
+      outputDir:
+        type: String
+        value: bbCounts
+
+    command: |
+      mkdir -p ${outputDir};
+      alleleCounter \
+      -l ${bbRefLoci} \
+      -o ${outputDir + "/" + SM + "_" + bbRefName + ".tsv"} \
+      -b ${bamFile}
+
+    output:
+      alleleCounts:
+        type: File
+        value: "${outputDir}/${SM}_${bbRefName}.tsv"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  qc_metrics:
+    input:
+      controlBam:
+        type: File
+      controlBamBai:
+        type: File
+      tumorBam:
+        type: File
+      tumorBamBai:
+        type: File
+      outputDir:
+        type: String
+        value: "."
+
+    command: |
+      qc_and_metrics.pl ${outputDir} ${controlBam} ${tumorBam}
+
+    output:
+      qc_metrics:
+        type: File
+        value: "${outputDir}/qc_metrics.json"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  ascat:
+    input:
+      tumorBam:
+        type: File
+      tumorBamBai:
+        type: File
+      controlBam:
+        type: File
+      controlBamBai:
+        type: File
+      genomeFa:
+        type: File
+      genomeFai:
+        type: File
+      snpPosFile:
+        type: File
+      snpLociFile:
+        type: File
+      snpGcCorrectionsFile:
+        type: File
+      SM:
+        type: String
+      seqType:
+        type: String
+      assembly:
+        type: String
+      species:
+        type: String
+      platform:
+        type: String
+      gender:
+        type: String
+        value: "L"
+      outputDir:
+        type: String
+        value: "ascat"
+
+    command: |
+      mkdir -p ${outputDir};
+      ascat.pl \
+      -r ${genomeFa} \
+      -pr ${seqType} \
+      -ra ${assembly} \
+      -rs ${species} \
+      -g ${gender} \
+      -pl ${platform} \
+      -s ${snpLociFile} \
+      -sp ${snpPosFile} \
+      -sg ${snpGcCorrectionsFile} \
+      -o ${outputDir} \
+      -t ${tumorBam} \
+      -n ${controlBam} \
+      -f ;
+
+    output:
+      abberationReliabilityPng:
+        type: File
+        value: "${outputDir}/${SM}.aberrationreliability.png"
+      ASCATprofilePng:
+        type: File
+        value: "${outputDir}/${SM}.ASCATprofile.png"
+      ASPCFPng:
+        type: File
+        value: "${outputDir}/${SM}.ASPCF.png"
+      germlinePng:
+        type: File
+        value: "${outputDir}/${SM}.germline.png"
+      rawProfilePng:
+        type: File
+        value: "${outputDir}/${SM}.rawprofile.png"
+      sunrisePng:
+        type: File
+        value: "${outputDir}/${SM}.sunrise.png"
+      tumorPng:
+        type: File
+        value: "${outputDir}/${SM}.tumour.png"
+      copynumberCavemanCsv:
+        type: File
+        value: "${outputDir}/${SM}.copynumber.caveman.csv"
+      copynumberCavemanVcf:
+        type: File
+        value: "${outputDir}/${SM}.copynumber.caveman.vcf.gz"
+      copynumberCavemanVcfTbi:
+        type: File
+        value: "${outputDir}/${SM}.copynumber.caveman.vcf.gz.tbi"
+      copynumberTxt:
+        type: File
+        value: "${outputDir}/${SM}.copynumber.txt"
+      sampleStatistics:
+        type: File
+        value: "${outputDir}/${SM}.samplestatistics.csv"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+
+  pindel:
+    input:
+      tumorBam:
+        type: File
+      tumorBamBai:
+        type: File
+      tumorBamId:
+        type: String
+      controlBam:
+        type: File
+      controlBamBai:
+        type: File
+      String controlBamId:
+        type: String
+      genomeFa:
+        type: File
+      genomeFai:
+        type: File
+      simpleRepeatsFile:
+        type: File
+      simpleRepeatsFileTbi:
+        type: File
+      vcfFilterRulesFile:
+        type: File
+      vcfFilterSoftRulesFile:
+        type: File
+      codingGeneFootprintsFile:
+        type: File
+      codingGeneFootprintsFileTbi:
+        type: File
+      unmatchedNormalPanelGff3:
+        type: File
+      unmatchedNormalPanelGff3Tbi:
+        type: File
+      badAnchorLociFile:
+        type: File
+      badAnchorLociFileTbi:
+        type: File
+      seqType:
+        type: String
+      assembly:
+        type: String
+      species:
+        type: String
+      pindelInputThreads:
+        type: Int
+      pindelNormalisedThreads:
+        type: Int
+      refExclude:
+        type: String
+      outputDir:
+        type: String
+        value: "pindel"
+
+    command: |
+        mkdir -p ${outputDir};
+
+        pindel.pl \
+        -r ${genomeFa} \
+        -e ${refExclude} \
+        -st ${seqType} \
+        -as ${assembly} \
+        -sp ${species} \
+        -s ${simpleRepeatsFile} \
+        -f ${vcfFilterRulesFile} \
+        -g ${codingGeneFootprintsFile} \
+        -u ${unmatchedNormalPanelGff3} \
+        -sf ${vcfFilterSoftRulesFile} \
+        -b ${badAnchorLociFile} \
+        -o ${outputDir} \
+        -t ${tumorBam} \
+        -n ${controlBam} \
+        -c ${pindelInputThreads} \
+        -l ${pindelNormalisedThreads} ;
+
+    output:
+      File flaggedVcf = "${outputDir}/${tumorBamId}_vs_${controlBamId}.flagged.vcf.gz"
+      File flaggedVcfTbi = "${outputDir}/${tumorBamId}_vs_${controlBamId}.flagged.vcf.gz.tbi"
+      File germlineBed = "${outputDir}/${tumorBamId}_vs_${controlBamId}.germline.bed"
+      File mt_bam = "${outputDir}/${tumorBamId}_vs_${controlBamId}_mt.bam"
+      File mt_bam_bai = "${outputDir}/${tumorBamId}_vs_${controlBamId}_mt.bam.bai"
+      File mt_bam_md5 = "${outputDir}/${tumorBamId}_vs_${controlBamId}_mt.bam.md5"
+      File wt_bam = "${outputDir}/${tumorBamId}_vs_${controlBamId}_wt.bam"
+      File wt_bam_bai = "${outputDir}/${tumorBamId}_vs_${controlBamId}_wt.bam.bai"
+      File wt_bam_md5 = "${outputDir}/${tumorBamId}_vs_${controlBamId}_wt.bam.md5"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+
+  brass:
+    input:
+      tumorBam:
+        type: File
+      tumorBamBai:
+        type: File
+      tumorBamBas:
+        type: File
+      tumorBamId:
+        type: String
+      controlBam:
+        type: File
+      controlBamBai:
+        type: File
+      controlBamBas:
+        type: File
+      controlBamId:
+        type: String
+      genomeFa:
+        type: File
+      genomeFai:
+        type: File
+      ignoredRegionsFile:
+        type: File
+      normalPanelGroupsFile:
+        type: File
+      normalPanelGroupsFileTbi:
+        type: File
+      genomeCacheFa:
+        type: File
+      genomeCacheFai:
+        type: File
+      genomeCacheFile:
+        type: File
+      genomeCacheFileTbi:
+        type: File
+      virusSeqsFile:
+        type: File
+      microbeSeqsDirectory:
+        type: File
+      microbeSeqsFilesPrefix:
+        type: String
+      microbeSeqsFiles:
+        type: File
+        list: true
+      bedCoordFile:
+        type: File
+      cnPath:
+        type: File
+      cnStats:
+        type: File
+      seqType:
+        type: String
+      assembly:
+        type: String
+      species:
+        type: String
+      Int threads:
+        type: Int
+      refExclude:
+        type: String
+      platform:
+        type: String
+      outputDir:
+        type: String
+        value: "brass"
+    
+    command: |
+      mkdir -p ${outputDir};
+
+      # need to symlink bas files since brass assumes they are in
+      # the same parent dir as the bam file
+      ln -s ${tumorBamBas} `dirname ${tumorBam}`;
+      ln -s ${controlBamBas} `dirname ${controlBam}`;
+
+      brass.pl \
+      -j 4 \
+      -k 4 \
+      -g ${genomeFa} \
+      -e ${refExclude} \
+      -pr ${seqType} \
+      -as ${assembly} \
+      -s ${species} \
+      -pl ${platform} \
+      -d ${ignoredRegionsFile} \
+      -f ${normalPanelGroupsFile} \
+      -g_cache ${genomeCacheFile} \
+      -o ${outputDir} \
+      -t ${tumorBam} \
+      -n ${controlBam} \
+      -vi ${virusSeqsFile} \
+      -mi ${microbeSeqsDirectory}/${microbeSeqsFilesPrefix} \
+      -b ${bedCoordFile} \
+      -a ${cnPath} \
+      -ss ${cnStats} \
+      -c ${threads} \
+      -l ${threads} ;
+
+    output:
+      controlBrmBam:
+        type: File
+        value: "${outputDir}/${controlBamId}.brm.bam"
+      controlBrmBamBai:
+        type: File
+        value: "${outputDir}/${controlBamId}.brm.bam.bai"
+      controlBrmBamMd5:
+        type: File
+        value: "${outputDir}/${controlBamId}.brm.bam.md5"
+      tumorBrmBam:
+        type: File
+        value: "${outputDir}/${tumorBamId}.brm.bam"
+      tumorBrmBamBai:
+        type: File
+        value: "${outputDir}/${tumorBamId}.brm.bam.bai"
+      tumorBrmBamMd5:
+        type: File
+        value: "${outputDir}/${tumorBamId}.brm.bam.md5"
+      annotBedPe:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.annot.bedpe"
+      annotVcf:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.annot.vcf.gz"
+      annotVcfTbi:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.annot.vcf.gz.tbi"
+      inversions:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.inversions.pdf"
+      diagnosticPlots:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.ngscn.diagnostic_plots.pdf"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+
+  caveCnPrep:
+    input:
+      cnPath:
+        type: File
+      type:
+        type: String
+    
+    command: |
+      if [[ "${type}" == "tumor" ]]; then 
+        export OFFSET=6 ;
+      else
+        export OFFSET=4 ;
+      fi ;
+      perl -ne '@F=(split q{,}, $_)[1,2,3,$OFFSET]; $F[1]-1; print join("\t",@F)."\n";' < ${cnPath} > ${type + ".cn.bed"};
+     
+    output:
+      caveCnPrepOut:
+        type: File
+        value: "${type}.cn.bed"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+
+
+  caveman:
+    input:
+      tumorBam:
+        type: File
+      tumorBamBai:
+        type: File
+      tumorBamId:
+        type: String
+      controlBam:
+        type: File
+      controlBamBai:
+        type: File
+      controlBamId:
+        type: String
+      genomeFa:
+        type: File
+      genomeFai:
+        type: File
+      ascatContamFile:
+        type: File
+      ignoredRegionsFile:
+        type: File
+      tumorCopyNumberFile:
+        type: File
+      controlCopyNumberFile:
+        type: File
+      pindelGermlineMutsFile:
+        type: File
+      flagBedFilesDir:
+        type: File
+      flagBedFiles:
+        type: File
+        list: true
+      unmatchedNormalFilesDir:
+        type: File
+      unmatchedNormalFiles:
+        type: File
+        list: true
+      seqType:
+        type: String
+      assembly:
+        type: String
+      species:
+        type: String
+      seqProtocol:
+        type: String
+      threads:
+        type: Int
+      outputDir:
+        type: String
+        value: "caveman"
+    
+    command: |
+      mkdir -p ${outputDir};
+
+      caveman.pl \
+      -ig ${ignoredRegionsFile} \
+      -b ${flagBedFilesDir} \
+      -np ${seqType} \
+      -tp ${seqType} \
+      -sa ${assembly} \
+      -s ${species} \
+      -st ${seqProtocol} \
+      -o ${outputDir} \
+      -tc ${tumorCopyNumberFile} \
+      -nc ${controlCopyNumberFile} \
+      -k ${ascatContamFile} \
+      -tb ${tumorBam} \
+      -nb ${controlBam} \
+      -r ${genomeFai} \
+      -u ${unmatchedNormalFilesDir} \
+      -in ${pindelGermlineMutsFile} \
+      -l ${threads} \
+      -t ${threads} ;
+
+    output:
+      flaggedMutsVcf:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.flagged.muts.vcf.gz"
+      flaggedMutsVcfTbi:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.flagged.muts.vcf.gz.tbi"
+      mutsIdsVcf:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.muts.ids.vcf.gz"
+      mutsIdsVcfTbi:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.muts.ids.vcf.gz.tbi"
+      snpsIdsVcf:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.snps.ids.vcf.gz"
+      snpsIdsVcfTbi:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.snps.ids.vcf.gz.tbi"
+      noAnalysisBed:
+        type: File
+        value: "${outputDir}/${tumorBamId}_vs_${controlBamId}.no_analysis.bed"
+
+    runtime:
+      docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+
+workflow:
+  name: sanger_cgp_somatic_vc
+  version: "1.8.6"
+
+  runtime:
+    docker: "quay.io/pancancer/pcawg-sanger-cgp"
+
+  input:
+    controlBam:
+      type: File
+    controlBamBai:
+      type: File
+    tumorBam:
+      type: File
+    tumorBamBai:
+      type: File
+    genomeFa:
+      type: File
+    genomeFai:
+      type: File
+    refExclude:
+      type: String
+      value: "MT,GL%,hs37d5,NC_007605"
+    platform:
+      type: String
+      value: "ILLUMINA"
+    seqType:
+      type: String
+      value: "WGS"
+    seqProtocol:
+      type: String
+      value: "genomic"
+    assembly:
+      type: String
+      value: "GRCh37"
+    species:
+      type: String
+      value: "human"
+    platform:
+      type: String
+      value: "ILLUMINA"
+
+    # bbAlleleCount
+    bbRefLociFiles:
+      type: File
+      list: true
+
+    # ASCAT
+    snpPosFile:
+      type: File
+    snpLociFile:
+      type: File
+    snpGcCorrectionsFile:
+      type: File
+
+    # PINDEL
+    simpleRepeatsFile:
+      type: File
+    simpleRepeatsFileTbi:
+      type: File
+    vcfFilterRulesFile:
+      type: File
+    vcfFilterSoftRulesFile:
+      type: File
+    codingGeneFootprintsFile:
+      type: File
+    codingGeneFootprintsFileTbi:
+      type: File
+    unmatchedNormalPanelGff3:
+      type: File
+    unmatchedNormalPanelGff3Tbi:
+      type: File
+    badAnchorLociFile:
+      type: File
+    badAnchorLociFileTbi:
+      type: File
+    pindelInputThreads:
+      type: Int
+    pindelNormalisedThreads:
+      type: Int
+
+    # BRASS
+    ignoredRegionsFile:
+      type: File
+    normalPanelGroupsFile:
+      type: File
+    normalPanelGroupsFileTbi:
+      type: File
+    genomeCacheFa:
+      type: File
+    genomeCacheFai:
+      type: File
+    genomeCacheFile:
+      type: File
+    genomeCacheFileTbi:
+      type: File
+    virusSeqsFile:
+      type: File
+    microbeSeqsDirectory:
+      type: File
+    microbeSeqsFilesPrefix:
+      type: String
+    microbeSeqsFiles:
+      type: File
+      list: true
+    bedCoordFile:
+      type: File
+    brassThreads:
+      type: Int
+
+    # CAVEMAN
+    cavemanIgnoredRegionsFile:
+      type: File
+    flagBedFilesDir:
+      type: File
+    flagBedFiles:
+      type: File
+      list: true
+    unmatchedNormalFilesDir:
+      type: File
+    unmatchedNormalFiles:
+      type: File
+      list: true
+    cavemanThreads:
+      type: Int
+
+
+  calls:
+    tumor_sampleId:
+      task: getSampleId
+      input:
+        inBam: tumorBam
+
+    control_sampleId:
+      task: getSampleId
+      input:
+        inBam: controlBam
+
+    tumor_basename:
+      task: get_basename
+      input:
+        f: tumorBam
+
+    control_basename:
+      task: get_basename
+      input:
+        f: controlBam
+
+    compareGenotype:
+      input:
+        controlBam: controlBam
+        controlBamBai: controlBamBai
+        controlBamId: control_sampleId.SM
+        tumorBam: tumorBam
+        tumorBamBai: tumorBamBai
+        tumorBamId: tumor_sampleId.SM
+
+    control_contam:
+      task: analyzeContamination
+      input:
+        process: control
+        bamFile: controlBam
+        bamIndexFile: controlBamBai
+        SM: control_sampleId.SM
+
+    tumor_contam:
+      task: analyzeContamination
+      input:
+        process: tumor
+        bamFile: tumorBam
+        bamIndexFile: tumorBamBai
+        SM: tumor_sampleId.SM
+        ascatSegmentFile: ascat.copynumberCavemanCsv
+
+    control_bam_stats:
+      task: bam_stats
+      input:
+        bamFile: controlBam
+        bamIndexFile: controlBamBai
+        bamFileName: control_basename.base
+
+    tumor_bam_stats:
+      task: bam_stats
+      input:
+        bamFile: tumorBam
+        bamIndexFile: tumorBamBai
+        bamFileName: tumor_basename.base
+
+
+    bbAlleleCounts:
+      scatter_call: true
+      input:
+        chrLoci:
+          item_of: bbRefLociFiles
+      calls:
+        get_basename:
+          input:
+            f: chrLoci
+
+        control_bbAlleleCount:
+          task: bbAlleleCount
+          input:
+            bamFile: controlBam
+            bamIndexFile: controlBamBai
+            SM: control_sampleId.SM
+            bbRefLoci: chrLoci
+            bbRefName: get_basename.base
+          depends_on:
+          - control_sampleId@completed
+          - get_basename@completed
+      
+        tumor_bbAlleleCount:
+          task: bbAlleleCount
+          input:
+            bamFile: tumorBam
+            bamIndexFile: tumorBamBai
+            SM: tumor_sampleId.SM
+            bbRefLoci: chrLoci
+            bbRefName: get_basename.base
+          depends_on:
+          - tumor_sampleId@completed
+          - get_basename@completed
+
+
+    ##
+    ## ASCAT - copynumber analysis
+    ##
+    ascat:
+      input:
+        controlBam: controlBam
+        controlBamBai: controlBamBai
+        tumorBam: tumorBam
+        tumorBamBai: tumorBamBai
+        SM: tumor_sampleId.SM
+        genomeFa: genomeFa
+        genomeFai: genomeFai
+        snpPosFile: snpPosFile
+        snpLociFile: snpLociFile
+        snpGcCorrectionsFile: snpGcCorrectionsFile
+        seqType: seqType
+        assembly: assembly
+        platform: platform
+        species: species
+
+    pindel:
+      input:
+        controlBam: controlBam
+        controlBamBai: controlBamBai
+        controlBamId: control_sampleId.SM
+        tumorBam: tumorBam
+        tumorBamBai: tumorBamBai
+        tumorBamId: tumor_sampleId.SM
+        genomeFa: genomeFa
+        genomeFai: genomeFai
+        simpleRepeatsFile: simpleRepeatsFile
+        simpleRepeatsFileTbi: simpleRepeatsFileTbi
+        vcfFilterRulesFile: vcfFilterRulesFile
+        vcfFilterSoftRulesFile: vcfFilterSoftRulesFile
+        codingGeneFootprintsFile: codingGeneFootprintsFile
+        codingGeneFootprintsFileTbi: codingGeneFootprintsFileTbi
+        unmatchedNormalPanelGff3: unmatchedNormalPanelGff3
+        unmatchedNormalPanelGff3Tbi: unmatchedNormalPanelGff3Tbi
+        badAnchorLociFile: badAnchorLociFile
+        badAnchorLociFileTbi: badAnchorLociFileTbi
+        seqType: seqType
+        assembly: assembly
+        species: species
+        refExclude: refExclude
+        pindelInputThreads: pindelInputThreads
+        pindelNormalisedThreads: pindelNormalisedThreads
+
+
+
+    ##
+    ## BRASS - breakpoint analysis
+    ##
+    brass:
+      input:
+        controlBam: controlBam
+        controlBamBai: controlBamBai
+        controlBamBas: control_bam_stats.basFile
+        controlBamId: control_sampleId.SM
+        tumorBam: tumorBam
+        tumorBamBai: tumorBamBai
+        tumorBamBas: tumor_bam_stats.basFile
+        tumorBamId: tumor_sampleId.SM
+        genomeFa: genomeFa
+        genomeFai: genomeFai 
+        ignoredRegionsFile: ignoredRegionsFile
+        normalPanelGroupsFile: normalPanelGroupsFile
+        normalPanelGroupsFileTbi: normalPanelGroupsFileTbi
+        genomeCacheFa: genomeCacheFa
+        genomeCacheFai: genomeCacheFai
+        genomeCacheFile: genomeCacheFile
+        genomeCacheFileTbi: genomeCacheFileTbi
+        virusSeqsFile: virusSeqsFile
+        microbeSeqsDirectory: microbeSeqsDirectory
+        microbeSeqsFilesPrefix: microbeSeqsFilesPrefix
+        microbeSeqsFiles: microbeSeqsFiles
+        bedCoordFile: bedCoordFile
+        cnPath: ascat.copynumberCavemanCsv
+        cnStats: ascat.sampleStatistics
+        seqType: seqType
+        assembly: assembly
+        species: species
+        platform: platform
+        refExclude: refExclude
+        threads: brassThreads
+
+
+    ##
+    ## Caveman - SNV analysis
+    ##
+    control_caveCnPrep:
+      task: caveCnPrep
+      input:
+        type: control
+        cnPath: ascat.copynumberCavemanCsv
+
+    tumor_caveCnPrep:
+      task: caveCnPrep
+      input:
+        type: tumor
+        cnPath: ascat.copynumberCavemanCsv
+      depends_on:
+      - ascat.completed
+
+    caveman:
+      input:
+        controlBam: controlBam
+        controlBamBai: controlBamBai
+        controlBamId: control_sampleId.SM
+        tumorBam: tumorBam
+        tumorBamBai: tumorBamBai
+        tumorBamId: tumor_sampleId.SM
+        controlCopyNumberFile: control_caveCnPrep.caveCnPrepOut
+        tumorCopyNumberFile: tumor_caveCnPrep.caveCnPrepOut
+        genomeFa: genomeFa
+        genomeFai: genomeFai
+        ascatContamFile: ascat.sampleStatistics
+        ignoredRegionsFile: cavemanIgnoredRegionsFile
+        pindelGermlineMutsFile: pindel.germlineBed
+        flagBedFilesDir: flagBedFilesDir
+        flagBedFiles: flagBedFiles
+        unmatchedNormalFilesDir: unmatchedNormalFilesDir
+        unmatchedNormalFiles: unmatchedNormalFiles
+        seqType: seqType
+        assembly: assembly
+        species: species
+        seqProtocol: seqProtocol
+        threads: cavemanThreads
+      depends_on:
+      - tumor_sampleId.completed
+      - control_sampleId.completed
+      - ascat.completed
+      - pindel.completed
+      - control_caveCnPrep.completed
+      - tumor_caveCnPrep.completed
+
+

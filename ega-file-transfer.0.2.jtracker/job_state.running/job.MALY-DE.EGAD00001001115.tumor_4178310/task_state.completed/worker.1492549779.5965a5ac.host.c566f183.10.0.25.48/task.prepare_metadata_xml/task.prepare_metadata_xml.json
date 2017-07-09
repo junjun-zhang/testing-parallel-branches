@@ -1,0 +1,1 @@
+{"input": {"metadata_git_repo": null, "submitter_sample_id": "tumor_4178310", "dataset_id": null, "project_code": "MALY-DE", "metadata_path": "ega_xml"}, "command": "echo prepare_metadata_xml.py"}

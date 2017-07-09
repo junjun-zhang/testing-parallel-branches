@@ -1,0 +1,170 @@
+# To be completed
+
+workflow:
+  name:  test
+  version: "0.0.0"
+  source_code: "https://github.com/junjun-zhang/ega-file-transfer-to-collab"
+
+  runtime:
+    docker: "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+
+  execution:
+    constraint: same_host  # other values: 'shared_fs', 'same_worker'
+    memory: 2g
+    cpu: 1
+
+  input:
+    project_code:
+      type: string
+    dataset_id:
+      type: string
+    submitter_sample_id:
+      type: string
+    icgc_sample_id:
+      type: string
+    submitter_donor_id:
+      type: string
+    submitter_specimen_id:
+      type: string
+    submitter:
+      type: string
+    bundle_type: # experiement or analysis
+      type: string
+    bundle_id:
+      type: string
+    library_strategy:
+      type: string
+    metadata_git_repo:
+      type: string
+    metadata_path:
+      type: string
+    files:
+      type: array
+      items:
+        type: object
+        properties:
+          ega_file_id:
+            type: string
+          file_name:
+            type: string
+          file_size:
+            type: integer
+          file_md5sum:
+            type: string
+          object_id:
+            type: string
+
+  output: null  # we may not need this, does the workflow as a whole need some sort of output? or output from individual tasks is just fine
+
+  completion_depends_on:  # do we need this? is it all calls succeeded then it's completed
+  - upload@completed
+
+  calls:
+    prepare_metadata_xml:
+      task: prepare_metadata_xml
+      input:
+        project_code: project_code
+        dataset_id: dataset_id
+        submitter_sample_id: submitter_sample_id
+        metadata_git_repo: metadata_git_repo
+        metadata_path: metadata_path
+      depends_on: null
+    download:
+      input:
+        files: files
+      depends_on: null
+    download_md5sum_check:
+      task: md5sum_check
+      input:
+        files: files@download
+      depends_on:
+      - completed@download
+    upload_all:
+      task: upload
+      input:
+        bundle_id: bundle_id
+        ega_files: files
+        xml_file_name: xml_file_name@prepare_metadata_xml
+        xml_file_size: xml_file_size@prepare_metadata_xml
+        xml_file_md5sum: xml_file_md5sum@prepare_metadata_xml
+      depends_on:
+      - completed@prepare_metadata_xml
+      - completed@download_md5sum_check
+
+
+# A workflow is made up with one or more tasks
+# Each task can have its own docker imagine if desirablebbvv
+tasks:
+  prepare_metadata_xml:
+    command: prepare_metadata_xml.py
+    input:
+      project_code:
+        type: string
+      dataset_id:
+        type: string
+      submitter_sample_id:
+        type: string
+      metadata_git_repo:
+        type: string
+      metadata_path:
+        type: string
+    output:
+      xml_file_name:
+        type: string
+      xml_file_size:
+        type: integer
+      xml_file_md5sum:
+        type: string
+
+  download:
+    command: download.py
+    input:
+      files:
+        type: array
+        items:
+          type: object
+          properties:
+            ega_file_id:
+              type: string
+            file_name:
+              type: string
+
+  md5sum_check:
+    command: md5sum_check.py
+    input:
+      files:
+        type: array
+        items:
+          type: object
+          properties:
+            file_name:
+              type: string
+            file_size:
+              type: integer
+            file_md5sum:
+              type: string
+
+  upload:
+    command: upload.py
+    input:
+      project_code:
+        type: string
+      ega_files:
+        type: array
+        items:
+          type: object
+          properties:
+            file_name:
+              type: string
+            file_md5sum:
+              type: string
+            object_id:
+              type: string
+      xml_file_name:
+        type: string
+      xml_file_size:
+        type: integer
+      xml_file_md5sum:
+        type: string
+
+

@@ -1,0 +1,211 @@
+#Demo workflow
+
+workflow:
+  name:  test
+  version: "0.1.0"
+  source_code: "https://github.com/junjun-zhang/ega-file-transfer-to-collab"
+
+  runtime:
+    docker: "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+
+  execution:
+    constraint: same_host  # other values: 'shared_fs', 'same_worker'
+    memory: 2g
+    cpu: 1
+
+  input:
+    project_code:
+      type: string
+    dataset_id:
+      type: string
+    submitter_sample_id:
+      type: string
+    icgc_sample_id:
+      type: string
+    submitter_donor_id:
+      type: string
+    submitter_specimen_id:
+      type: string
+    submitter:
+      type: string
+    bundle_type: # experiement or analysis
+      type: string
+    bundle_id:
+      type: string
+    library_strategy:
+      type: string
+    metadata_git_repo:
+      type: string
+    metadata_path:
+      type: string
+    files:
+      type: array
+      items:
+        type: object
+        properties:
+          ega_file_id:
+            type: string
+          file_name:
+            type: string
+          file_size:
+            type: integer
+          file_md5sum:
+            type: string
+          object_id:
+            type: string
+
+  output: null  # we may not need this, does the workflow as a whole need some sort of output? or output from individual tasks is just fine
+
+  completion_depends_on:  # do we need this? is it all calls succeeded then it's completed
+  - upload@completed
+
+  calls:
+    prepare_metadata_xml:
+      task: prepare_metadata_xml
+      input:
+        project_code: project_code
+        dataset_id: dataset_id
+        submitter_sample_id: submitter_sample_id
+        metadata_git_repo: metadata_git_repo
+        metadata_path: metadata_path
+      depends_on: null
+
+    parallel_download:
+      scatter:
+        input:
+          ega_file:
+            with_items: files  # this can be from output of a previous task, eg, files@previous_task
+            task_suffix: ega_file.ega_file_id  # Optional. IN this case, 'ega_file' will be used if omitted.
+      calls:
+        download:
+          task: download  # optional, if omitted task name will be the same as call name
+          input:
+            ega_file_id: ega_file.ega_file_id
+            file_name: ega_file.file_name
+          depends_on: null
+        md5sum_check:
+          task: md5sum_check
+          input:
+            file: file@download
+            file_size: ega_file.file_size
+            file_md5sum: ega_file.file_md5sum
+          depends_on:  # optional, this could be figured out from input params
+          - completed@download@same_host  # state@parent_task@
+
+    upload:
+      task: upload
+      input:
+        bundle_id: bundle_id
+        ega_files.file: file@download
+        ega_files.ega_file_id: ega_file_id@download
+        ega_files.object_id: ega_file_id@download
+        ega_files.file_name: file_name@download
+        ega_files.file_size: file_size@download
+        ega_files.file_md5sum: file_md5sum@download
+        xml_file: xml_file@prepare_metadata_xml
+        xml_file_name: xml_file_name@prepare_metadata_xml
+        xml_file_size: xml_file_size@prepare_metadata_xml
+        xml_file_md5sum: xml_file_md5sum@prepare_metadata_xml
+      depends_on:
+      - completed@prepare_metadata_xml
+      - completed@md5sum_check
+
+
+# A workflow is made up with one or more tasks
+# Each task can have its own docker imagine if desirablebbvv
+tasks:
+  prepare_metadata_xml:
+    command: prepare_metadata_xml.py
+    input:
+      project_code:
+        type: string
+      dataset_id:
+        type: string
+      submitter_sample_id:
+        type: string
+      metadata_git_repo:
+        type: string
+      metadata_path:
+        type: string
+    output:
+      xml_file:
+        type: string
+        is_file: true
+      xml_file_name:
+        type: string
+      xml_file_size:
+        type: integer
+      xml_file_md5sum:
+        type: string
+
+  download:
+    command: download.py
+    input:
+      ega_file_id:
+        type: string
+      file_name:
+        type: string
+      object_id:
+        type: string
+      file_size:
+        type: string
+      file_md5sum:
+        type: string
+    output:
+      file:  # new field
+        type: string
+        is_file: true
+      ega_file_id:  # passing through
+        type: string
+      file_name:  # passing through
+        type: string
+      object_id:  # passing through
+        type: string
+      file_size:  # passing through
+        type: integer
+      file_md5sum:  # passing through
+        type: string
+
+  md5sum_check:
+    command: md5sum_check.py
+    input:
+      file:
+        type: string
+        is_file: true
+      file_size:
+        type: integer
+      file_md5sum:
+        type: string
+
+  upload:
+    command: upload.py
+    input:
+      project_code:
+        type: string
+      bundle_id:
+        type: string
+      ega_files:
+        type: array
+        items:
+          type: object
+          properties:
+            file:
+              type: string
+              is_file: true
+            file_name:
+              type: string
+            file_md5sum:
+              type: string
+            object_id:
+              type: string
+            ega_file_id:
+              type: string
+      xml_file:
+        type: string
+        is_file: true
+      xml_file_name:
+        type: string
+      xml_file_size:
+        type: integer
+      xml_file_md5sum:
+        type: string

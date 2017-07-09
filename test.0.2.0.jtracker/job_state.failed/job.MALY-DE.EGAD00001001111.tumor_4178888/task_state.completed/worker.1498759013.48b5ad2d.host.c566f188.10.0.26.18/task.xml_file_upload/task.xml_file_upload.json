@@ -1,0 +1,36 @@
+{
+  "task": "xml_file_upload", 
+  "depends_on": [
+    "completed@prepare_metadata_xml", 
+    "completed@download"
+  ], 
+  "tool": "upload", 
+  "command": "upload.py", 
+  "output": [
+    {
+      "_jt_": {
+        "worker_id": "worker.1498759013.48b5ad2d.host.c566f188.10.0.26.18", 
+        "workflow_version": "0.2.0", 
+        "jt_version": "0.1.0rc8", 
+        "task_state": "completed"
+      }, 
+      "runtime": {
+        "task_start": 1498759091, 
+        "task_stop": 1498759098
+      }
+    }
+  ], 
+  "input": {
+    "xml_file_md5sum": "xxxxxxxx", 
+    "xml_file_name": "xml_file.xml", 
+    "xml_file": "/path/to/xml_file.xml", 
+    "ega_files.file": [
+      "/path/to/downloaded/file.bam"
+    ], 
+    "xml_file_size": 23233, 
+    "bundle_id": "EGAZxxxxxxx"
+  }, 
+  "runtime": {
+    "docker": "quay.io/junjun_zhang/ega-file-transfer-to-collab"
+  }
+}

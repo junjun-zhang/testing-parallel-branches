@@ -1,0 +1,286 @@
+# Original WDL file: https://github.com/ICGC-TCGA-PanCancer/wdl-pcawg-bwa-mem-workflow/blob/47f4bb3ccc7d9bf5b7498b23dbd9d8a54df17e89/pcawg-bwa-mem-workflow.wdl
+
+tasks:
+  get_basename:
+    input:
+      f:
+        type: File
+    command: "basename ${f}"
+    output:
+      base:
+        type: String
+        value: read_string(stdout())
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  read_header:
+    input:
+      unalignedBam:
+        type: File
+      bamName:
+        type: String
+    command: |
+      samtools view -H ${unalignedBam} | \
+      perl -nae 'next unless /^\@RG/; s/\tPI:\t/\t/; s/\tPI:\s*\t/\t/; s/\tPI:\s*\z/\n/; s/\t/\\t/g; print' > "${bamName}_header.txt"
+    output:
+      header:
+        type: String
+        value: |
+          read_string("${bamName}_header.txt")
+      header_file:
+        type: File
+        value: "${bamName}_header.txt"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  count_reads:
+    input:
+      unalignedBam:
+        type: File
+      bamName:
+        type: String
+    command: |
+      samtools view ${unalignedBam} | \
+      wc -l > "${bamName}_read_count.txt"
+    output:
+      counts_file:
+        type: File
+        value: "${bamName}_read_count.txt"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  align:
+    input:
+      unalignedBam:
+        type: File
+      bamHeader:
+        type: String
+      reference_gz:
+        type: File
+      reference_gz_fai:
+        type: File
+      reference_gz_amb:
+        type: File
+      reference_gz_ann:
+        type: File
+      reference_gz_bwt:
+        type: File
+      reference_gz_pac:
+        type: File
+      reference_gz_sa:
+        type: File
+      bamName:
+        type: String
+      threads:
+        type: Int
+      sortMemMb:
+        type: StrInting
+    command: |
+      bamtofastq exlcude=QCFAIL,SECONDARY,SUPPLEMENTARY T=${bamName + ".t"} S=${bamName + ".s"} O=${bamName + ".o"} O2=${bamName + ".o2"} collate=1 tryoq=1 filename=${unalignedBam} | \
+      bwa mem -p -t ${threads} -T 0 -R "${bamHeader}" ${reference_gz} - | \
+      bamsort blockmb=${sortMemMb} inputformat=sam level=1 outputthreads=2 calmdnm=1 calmdnmrecompindetonly=1 calmdnmreference=${reference_gz} tmpfile=${bamName + ".sorttmp"} O=${bamName + "_aligned.bam"}
+    output:
+      File bam_output = "${bamName}_aligned.bam"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  bam_stats_qc:
+    input:
+      bamHeader:
+        type: File
+      readCount:
+        type: File
+      bam:
+        type: File
+      bamName:
+        type: String
+    command: |
+     bam_stats -i ${bam} -o ${bamName + ".bas"} \
+     && \
+     verify_read_groups.pl --header-file ${bamHeader} --bas-file ${bamName + ".bas"} --input-read-count-file ${readCount}
+    output:
+      bam_stats:
+        type: File
+        value: "${bamName}.bas"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  merge:
+    input:
+      inputBams:
+        type: File
+        list: true
+      outputFilePrefix:
+        type: String
+      threads:
+        type: Int
+    command: |
+      bammarkduplicates \
+      I=${sep=" I=" inputBams} \
+      O=${outputFilePrefix + ".bam"} \
+      M=${outputFilePrefix + ".metrics"} \
+      tmpfile=${outputFilePrefix + ".biormdup"} \
+      markthreads=${threads} \
+      rewritebam=1 \
+      rewritebamlevel=1 \
+      index=1 \
+      md5=1
+    output:
+      merged_bam:
+        type: File
+        value: "${outputFilePrefix}.bam"
+      merged_bam_bai:
+        type: File
+        value: "${outputFilePrefix}.bam.bai"
+      merged_bam_metrics:
+        type: File
+        value: "${outputFilePrefix}.metrics"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  extract_unaligned_reads:
+    input:
+      inputBam:
+        type: File
+      reference_gz:
+        type: File
+      reference_gz_fai:
+        type: File
+      outputFilePrefix:
+        type: String
+      sortMemMb:
+        type: Int
+      f:
+        type: Int
+    command: |
+      samtools view -h -f ${f} ${inputBam} | \
+      remove_both_ends_unmapped_reads.pl | \
+      bamsort blockmb=${sortMemMb} inputformat=sam level=1 outputthreads=2 calmdnm=1 calmdnmrecompindetonly=1 calmdnmreference=${reference_gz} tmpfile=${outputFilePrefix + ".sorttmp"} O=${outputFilePrefix + "_unmappedReads_f" + f + ".bam"}
+    output:
+      unmapped_reads:
+        type: File
+        value: "${outputFilePrefix}_unmappedReads_f${f}.bam"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  extract_both_reads_unaligned:
+    input:
+      inputBam:
+        type: File
+      outputFilePrefix:
+        type: String
+    command: |
+      samtools view -h -b -f 12 ${inputBam} > "${outputFilePrefix}_unmappedReads_f12.bam"
+    output:
+      unmapped_reads:
+        type: File
+        value: "${outputFilePrefix}_unmappedReads_f12.bam"
+    runtime:
+      docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+workflow:
+  name: bwa_workflow
+  version: "2.6.8"
+
+  runtime:
+    docker: "quay.io/pancancer/pcawg-bwa-mem"
+
+  input:
+    unalignedBams:
+      type: File
+      list: true
+    reference_gz:
+      type: File
+    reference_gz_fai:
+      type: File
+    outputFilePrefix:
+      type: String
+    sortMemMb:
+      type: Int
+    threads:
+      type: Int
+
+  calls:
+    parallel_align:
+      parallel_call:
+        with_items: bam in unalignedBams
+      calls:
+        get_basename:
+          input:
+            f: bam
+        read_header:
+          input:
+            unalignedBam: bam
+            bamName: get_basename.base
+          depends_on:
+          - get_basename@completed
+        count_reads:
+          input:
+            unalignedBam: bam
+            bamName: get_basename.base
+          depends_on:
+          - get_basename@completed
+        align:
+          input:
+            unalignedBam: bam
+            bamHeader: read_header.header
+            bamName: get_basename.base
+            threads: threads
+            sortMemMb: sortMemMb
+            reference_gz: reference_gz
+            reference_gz_fai: reference_gz_fai
+          depends_on:
+          - get_basename@completed
+          - read_header@completed
+        bam_stats_qc:
+          input:
+            bam: align.bam_output
+            bamHeader: read_header.header_file
+            readCount: count_reads.counts_file
+            bamName: get_basename.base
+          depends_on:
+          - get_basename@completed
+          - read_header@completed
+          - count_reads@completed
+
+    merge:
+      input:
+        inputBams: align.bam_output
+        threads: threads
+        outputFilePrefix: outputFilePrefix
+
+    get_unmapped:
+      task: extract_unaligned_reads
+      input:
+        inputBam: merge.merged_bam
+        f: 4
+        sortMemMb: sortMemMb
+        outputFilePrefix: outputFilePrefix
+        reference_gz: reference_gz
+        reference_gz_fai: reference_gz_fai
+
+    get_unmapped_mate:
+      task: extract_unaligned_reads
+      input:
+        inputBam: merge.merged_bam
+        f: 8
+        sortMemMb: sortMemMb
+        outputFilePrefix: outputFilePrefix
+        reference_gz: reference_gz
+        reference_gz_fai: reference_gz_fai
+
+    extract_both_reads_unaligned:
+      input:
+        inputBam: merge.merged_bam
+        outputFilePrefix: outputFilePrefix
+
+    merge_unmapped:
+      task: merge
+      input:
+        inputBams:
+        - get_unmapped.unmapped_reads
+        - get_unmapped_mate.unmapped_reads
+        - extract_both_reads_unaligned.unmapped_reads
+        threads: threads
+        outputFilePrefix: outputFilePrefix
+

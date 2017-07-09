@@ -1,0 +1,110 @@
+jtracker_git_repo:
+  url: https://github.com/icgc-dcc/jtracker_example_workflow
+
+workflow:
+  name:  ega-file-transfer
+  version: "0.1"
+  source_code: https://github.com/icgc-dcc/ega-file-transfer
+  docker_image: https://quay.io/repository/icgc-dcc/ega-file-transfer
+
+descriptor:
+  inputs:
+    - name: bundle_id
+      type: string
+    - name: ega_files
+      type: array
+      items:
+        type: object
+        properties:
+          ega_file_id:
+            type: string
+          file_name:
+            type: string
+          file_size:
+            type: integer
+          file_md5sum:
+            type: string
+          object_id:
+            type: string
+
+  outputs: null
+
+  completion_depends_on:
+    - upload.completed
+
+# A workflow is made up with one or more tasks
+# Each task can have its own docker imagine if desirable
+tasks:
+  - name: prepare_metadata_xml
+    depends_on: null
+    run: bin/extract_header.py
+    constraint: null
+    inputs:
+      - ega_files:
+          type: array
+          items:
+            type: object
+            properties:
+              file_name:
+                type: string
+              file_size:
+                type: integer
+              file_md5sum:
+                type: string
+    outputs:
+      - metadata_xml_file:
+          type: string
+
+  - name: download
+    depends_on: null
+    run: bin/download.py
+    constraint: null
+    inputs:
+      - ega_files:
+          type: array
+          items:
+            type: object
+            properties:
+              ega_file_id:
+              type: string
+            file_name:
+              type: string
+
+  - name: md5sum_check
+    depends_on:
+      - download.completed
+    constraint: same_host
+    run: bin/md5sum_check.py
+    inputs:
+      - ega_files:
+          type: array
+          items:
+            type: object
+            properties:
+              file_name:
+                type: string
+              file_size:
+                type: integer
+              file_md5sum:
+                type: string
+
+  - name: upload
+    depends_on:
+      - md5sum_check.completed
+      - prepare_metadata_xml.completed
+    constraint: same_host
+    run: bin/upload.py
+    inputs:
+      - ega_files:
+          type: array
+          items:
+            type: object
+            properties:
+              file_name:
+                type: string
+              object_id:
+                type: string
+      - metadata_xml_file:
+          type: string
+
+

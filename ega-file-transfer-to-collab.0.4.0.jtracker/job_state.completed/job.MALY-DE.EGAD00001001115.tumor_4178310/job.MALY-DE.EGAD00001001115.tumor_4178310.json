@@ -1,0 +1,35 @@
+{
+   "project_code": "MALY-DE",
+   "ega_study_id": "EGAS0000000000",
+   "ega_dataset_id": "EGAD00001001115",
+   "ega_sample_id": "EGAN000000000",
+   "submitter_sample_id": "tumor_4178310",
+   "icgc_sample_id": "SA2322",
+   "submitter": "MALY-DE",
+   "ega_analysis_id": "EGAZ000000000",
+   "ega_experiment_id": null,
+   "ega_run_id": null,
+   "bundle_type": "analysis",
+   "bundle_id": "EGAZ000000000",
+   "library_strategy": "WGS",
+   "ega_metadata_git_repo": "https://github.com/icgc-dcc/ega-file-transfer",
+   "ega_metadata_path": "ega_xml",
+   "ega_metadata_file_name": "bundle.EGAZ000000000.xml",
+   "ega_metadata_object_id": "9e8c5377-4e0b-4405-9793-fe3318e8b098",
+   "ega_files": [
+       {
+           "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
+           "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam",
+           "file_size": 101479101227,
+           "ega_file_id": "EGAF00000003",
+           "object_id": "15069904-9a19-5ec1-ac37-ab89694280e7"
+       },
+       {
+           "file_md5sum": "116c489613590f1aaaaf9437910f4e50",
+           "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam",
+           "file_size": 15934296,
+           "ega_file_id": "EGAF00000004",
+           "object_id": "17a5c042-773b-554a-8a9e-70251f3d4940"
+       }
+   ]
+}

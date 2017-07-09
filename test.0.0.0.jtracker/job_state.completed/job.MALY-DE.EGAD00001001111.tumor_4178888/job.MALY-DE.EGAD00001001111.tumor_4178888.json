@@ -1,0 +1,31 @@
+{
+   "project_code": "MALY-DE",
+   "ega_dataset_id": "EGAD00001001115",
+   "submitter_sample_id": "tumor_4178310",
+   "icgc_sample_id": "SA2322",
+   "submitter_donor_id": null,
+   "submitter_specimen_id": "tumor_4178310",
+   "submitter": "MALY-DE",
+   "bundle_type": "analysis",
+   "bundle_id": "EGAZxxxxxxx",
+   "library_strategy": "WGS",
+   "metadata_repo_url": "https://github.com/icgc-dcc/ega-file-transfer",
+   "metadata_path": "ega_xml",
+   "files": [
+       {
+           "file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
+           "encrypted_file_md5sum": "c9eac57c275d00cb6b3b19bb6a6c33c2",
+           "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam",
+           "file_size": 101479101227,
+           "ega_file_id": "EGAF00000000",
+           "object_id": "15069904-9a19-5ec1-ac37-ab89694280e7"
+       },
+       {
+           "file_md5sum": "116c489613590f1aaaaf9437910f4e50",
+           "file_name": "c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.bam.bai",
+           "file_size": 15934296,
+           "ega_file_id": "EGAF00000001",
+           "object_id": "17a5c042-773b-554a-8a9e-70251f3d4940"
+       }
+   ]
+}

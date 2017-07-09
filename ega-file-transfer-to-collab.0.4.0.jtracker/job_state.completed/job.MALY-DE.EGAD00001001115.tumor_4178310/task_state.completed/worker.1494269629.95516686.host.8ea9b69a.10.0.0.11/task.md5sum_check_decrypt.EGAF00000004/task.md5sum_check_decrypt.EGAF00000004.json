@@ -1,0 +1,25 @@
+{
+  "task": "md5sum_check_decrypt", 
+  "depends_on": [
+    "completed@decryption.EGAF00000004"
+  ], 
+  "tool": "md5sum_check", 
+  "command": "md5sum_check.py", 
+  "output": [
+    {
+      "runtime": {
+        "task_start": 1494270018, 
+        "task_stop": 1494270025
+      }, 
+      "worker_id": "worker.1494269629.95516686.host.8ea9b69a.10.0.0.11", 
+      "task_state": "completed"
+    }
+  ], 
+  "input": {
+    "file_md5sum": "116c489613590f1aaaaf9437910f4e50", 
+    "file": "/u/junjun/jtracker/worker.1494269629.95516686.host.8ea9b69a.10.0.0.11/job.MALY-DE.EGAD00001001115.tumor_4178310/task.decryption.EGAF00000004/c9eac57c275d00cb6b3b19bb6a6c33c2.original_file_name.2.bam"
+  }, 
+  "runtime": {
+    "docker": null
+  }
+}
